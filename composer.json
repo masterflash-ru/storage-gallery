@@ -1,0 +1,38 @@
+{
+    "name": "masterflash-ru/storage-gallery",
+    "description": "Надстройка над storage для хранения массивов фото, фотогалерей",
+    "type": "Service",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "masterflash",
+        "zendframework",
+        "gallery"
+    ],
+    "homepage": "https://masterflash.ru/",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^7.0",
+        "masterflash-ru/storage": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mf\\StorageGallery\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mf\\StorageGallery\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev",
+            "dev-develop": "1.0-dev"
+        },
+        "zf": {
+            "component": "Mf\\StorageGallery",
+            "config-provider": "masterflash-ru\\Mf\\StorageGallery\\ConfigProvider"
+        }
+    }
+}
