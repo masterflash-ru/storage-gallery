@@ -10,7 +10,7 @@ return [
 
     'service_manager' => [
         'factories' => [//сервисы-фабрики
-            Service\GalleryLib::class => Service\Factory\FilesLibFactory::class,
+            Service\GalleryLib::class => Service\Factory\GalleryLib::class,
         ],
         'aliases' => [
             "GalleryLib"=>Service\GalleryLib::class,

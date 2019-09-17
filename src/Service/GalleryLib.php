@@ -8,7 +8,7 @@ use Exception;
 */
 
 
-class SGallery 
+class GalleryLib 
 {
 	protected $storage;
     

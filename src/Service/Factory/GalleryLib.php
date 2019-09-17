@@ -8,12 +8,12 @@ use Interop\Container\ContainerInterface;
 генерации сервиса обработки файлов/фото и записи/возврата в хранилище
 */
 
-class SGallery
+class GalleryLib
 {
 
 public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-		$storage=$container->get('FilesStorage');
+		$storage=$container->get("FilesLib");
         return new $requestedName($storage);
     }
 }
