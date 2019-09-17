@@ -15,34 +15,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Table structure for table `storage`
---
-
-DROP TABLE IF EXISTS `storage`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `storage` (
-  `id` int(11) unsigned NOT NULL,
-  `razdel` char(50) NOT NULL COMMENT 'раздел, например, news',
-  `todelete` int(11) DEFAULT '0' COMMENT 'флаг что нужно удалить эти фото',
-  `file_array` text COMMENT 'структура serialize массива имен файлов',
-  `version` float(9,1) DEFAULT NULL COMMENT 'версия хранилища',
-  PRIMARY KEY (`id`,`razdel`),
-  KEY `todelete` (`todelete`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Хранилище файлов';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `storage`
---
-
-LOCK TABLES `storage` WRITE;
-/*!40000 ALTER TABLE `storage` DISABLE KEYS */;
-/*!40000 ALTER TABLE `storage` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `storage_gallery`
 --
 
