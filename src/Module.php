@@ -3,7 +3,7 @@
 Библиотека работы с изображениями
  */
 
-namespace Mf\Storage;
+namespace Mf\StorageGallery;
 
 class Module
 {
