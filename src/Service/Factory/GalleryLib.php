@@ -12,9 +12,11 @@ class GalleryLib
 {
 
 public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
-    {
-		$storage=$container->get("FilesLib");
-        return new $requestedName($storage);
-    }
+{
+	$storage=$container->get("FilesLib");
+    $connection=$container->get('DefaultSystemDb');
+    $cache = $container->get('DefaultSystemCache');
+    return new $requestedName($storage,$connection,$cache);
+}
 }
 
