@@ -32,7 +32,7 @@
         },
         "zf": {
             "component": "Mf\\StorageGallery",
-            "config-provider": "masterflash-ru\\Mf\\StorageGallery\\ConfigProvider"
+            "config-provider": "Mf\\StorageGallery\\ConfigProvider"
         }
     }
 }
