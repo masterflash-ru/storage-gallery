@@ -2,24 +2,8 @@
 namespace Mf\StorageGallery\Service;
 
 use Exception;
+use ADO\Service\RecordSet;
 
-
-/*
-CREATE TABLE `storage_gallery` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `razdel` char(50) NOT NULL COMMENT 'Имя раздела',
-  `razdel_id` int(11) NOT NULL DEFAULT '0' COMMENT 'ID раздела',
-  `gallery_index` int(11) NOT NULL DEFAULT '0' COMMENT 'номер галереи, начиная с 0',
-  `date_public` datetime DEFAULT NULL COMMENT 'дата публикации',
-  `public` int(11) DEFAULT NULL COMMENT 'флаг публикации',
-  `poz` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `date_public` (`date_public`),
-  KEY `razdel` (`razdel`,`razdel_id`),
-  KEY `public` (`public`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='галерея в хранилище';
-
-*/
 
 
 class GalleryLib 
@@ -27,6 +11,7 @@ class GalleryLib
 	protected $storage;
     protected $connection;
     protected $cache;
+    protected $storage_name="";
     
     /*
     */
@@ -37,6 +22,14 @@ class GalleryLib
         $this->cache=$cache;
     }
 
+    /*
+    * активирует из списка элементов обработчиков хранилища нужный элемент, 
+    * передается ключ к массиву для items
+    */
+    public function selectStorageItem(string $name)
+    {
+       $this->storage_name=$name;
+    }
 
     /**
     * получить массив номеров галерей для данного имени и раздела
@@ -61,6 +54,41 @@ class GalleryLib
         return $rez;
     }
 
+    /**
+    * Создание библиотеки файлов по результатам информации, переданной в selectStorageItem
+    * на входе имя файла, который находится во временном хранилище БЕЗ ПУТИ!
+    * $filename = имя файла из которого создаются все размеры, обычно в data/images
+    * $gallery_id - ID галереи куда пишем/замещаем файл, если добавляем новую, тогда 0
+    * $razdel - имя раздела, например, news
+    * $razdel_id - уникальный номер записи, обычно ID записи, например в новостях
+    * $index - номер галереи, по умолчанию 0
+    * $field_values - дополнительные поля для записи
+    */
+    public function saveFiles(string $filename,int $gallery_id, string $razdel, int $razdel_id, int $index=0, array $field_values=[])
+    {
+        $rs=new RecordSet();
+        $rs->CursorType = adOpenKeyset;
+        $rs->open("SELECT * FROM storage_gallery where id={$gallery_id}",$this->connection);
+        if ($rs->EOF){
+            //новая
+            $rs->AddNew();
+            $rs->Fields->Item["razdel"]->Value=$razdel;
+            $rs->Fields->Item["razdel_id"]->Value=$razdel_id;
+            $rs->Fields->Item["gallery_index"]->Value=$index;
+        }
+        if (isset($field_values["alt"])){
+            $rs->Fields->Item["alt"]->Value=$field_values["alt"];
+        }
+        if (isset($field_values["poz"])){
+            $rs->Fields->Item["poz"]->Value=$field_values["poz"];
+        }
+        if (isset($field_values["date_public"])){
+            $rs->Fields->Item["poz"]->Value=$field_values["date_public"];
+        }
+        $rs->Update();
+        $this->storage->selectStorageItem($this->storage_name);
+        $this->storage->saveFiles($filename,$this->storage_name,$rs->Fields->Item["id"]->Value);
+    }
 
     /**
     * получить массив выбранной галереи
