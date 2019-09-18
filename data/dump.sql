@@ -23,16 +23,16 @@ DROP TABLE IF EXISTS `storage_gallery`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `storage_gallery` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `razdel` char(50) NOT NULL,
-  `gallery_number` int(11) NOT NULL COMMENT 'номер галереи, начиная с 0',
+  `razdel` char(50) NOT NULL COMMENT 'Имя раздела',
+  `razdel_id` int(11) NOT NULL DEFAULT '0' COMMENT 'ID раздела',
+  `gallery_index` int(11) NOT NULL DEFAULT '0' COMMENT 'номер галереи, начиная с 0',
   `date_public` datetime DEFAULT NULL COMMENT 'дата публикации',
+    `alt` char(255) COMMENT 'Подпись фото',
   `public` int(11) DEFAULT NULL COMMENT 'флаг публикации',
-  `todelete` int(11) DEFAULT NULL COMMENT 'флаг удаления',
   `poz` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`,`razdel`),
-  KEY `gallery_number` (`gallery_number`),
-  KEY `todelete` (`todelete`),
+  PRIMARY KEY (`id`),
   KEY `date_public` (`date_public`),
+  KEY `razdel` (`razdel`,`razdel_id`),
   KEY `public` (`public`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='галерея в хранилище';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -57,7 +57,7 @@ DELIMITER ;;
 /*!50003 CREATE*/ /*!50003 TRIGGER `storage_gallery_before_del_tr` BEFORE DELETE ON `storage_gallery`
   FOR EACH ROW
 BEGIN
-update storage set todelete=1 where razdel="storage_gallery" and id=OLD.id;
+update storage set todelete=1 where razdel=concat(OLD.razdel,'_',OLD.razdel_id) and id=OLD.id;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
