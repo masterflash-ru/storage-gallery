@@ -95,9 +95,10 @@ class GalleryLib
     * $razdel - имя раздела, например, news
     * $razdel_id - идентификатор раздела
     * $index - номер галереи
+    * $img_name - имя элемента изображения
     * возвращает массив
     */
-    public function getItemsArrayForName(string $razdel,int $razdel_id, int $index=0,string $img_name="admin_img")
+    public function getItemsArray(string $razdel,int $razdel_id, int $index=0,string $img_name="admin_img")
     {
         $rs=$this->connection->Execute("
                 select * from 
@@ -109,7 +110,16 @@ class GalleryLib
                                 order by poz desc");
         $rez=[];
         while (!$rs->EOF){
-            $rez[(int)$rs->Fields->Item["id"]->Value]=$this->storage->loadFile("{$razdel}_{$razdel_id}",(int)$rs->Fields->Item["id"]->Value,$img_name);
+            $img=[
+                "img"=>$this->storage->loadFile($rs->Fields->Item["storage_gallery_name"]->Value,(int)$rs->Fields->Item["id"]->Value,$img_name),
+                "alt"=>$rs->Fields->Item["alt"]->Value,
+                "date_public"=>$rs->Fields->Item["date_public"]->Value,
+                "public"=>$rs->Fields->Item["public"]->Value,
+                "poz"=>$rs->Fields->Item["poz"]->Value,
+            ];
+            
+            
+            $rez[(int)$rs->Fields->Item["id"]->Value]=$img;
             $rs->MoveNext();
         }
         return $rez;

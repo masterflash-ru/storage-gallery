@@ -26,6 +26,7 @@ CREATE TABLE `storage_gallery` (
   `razdel` char(50) NOT NULL COMMENT 'Имя раздела',
   `razdel_id` int(11) NOT NULL DEFAULT '0' COMMENT 'ID раздела',
   `gallery_index` int(11) NOT NULL DEFAULT '0' COMMENT 'номер галереи, начиная с 0',
+    `storage_gallery_name` char(100) DEFAULT NULL COMMENT 'Имя эл-та хранилища обработки отдельных фото галереи',
   `date_public` datetime DEFAULT NULL COMMENT 'дата публикации',
     `alt` char(255) COMMENT 'Подпись фото',
   `public` int(11) DEFAULT NULL COMMENT 'флаг публикации',

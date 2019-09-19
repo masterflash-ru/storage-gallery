@@ -21,8 +21,12 @@ return [
 
     'view_helpers' => [
         'factories' => [
+            View\Helper\GalleryLib::class => View\Helper\Factory\GalleryLib::class,
         ],
         'aliases' => [
+            'GalleryLib' => View\Helper\GalleryLib::class,
+			'Gallerylib' => View\Helper\GalleryLib::class,
+            'gallerylib' => View\Helper\GalleryLib::class,
         ],
     ],
 ];
