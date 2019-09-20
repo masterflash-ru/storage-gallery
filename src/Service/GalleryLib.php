@@ -143,6 +143,7 @@ class GalleryLib
         $rs->Update();
         $this->storage->selectStorageItem($this->storage_name);
         $this->storage->saveFiles($filename,$this->storage_name,$rs->Fields->Item["id"]->Value);
+       $this->cache->clearByTags(["storage_gallery"],true);
     }
 
     
@@ -172,7 +173,9 @@ class GalleryLib
         $rs->Fields->Item["alt"]->Value=$_metas["alt"];
         $rs->Fields->Item["poz"]->Value=$_metas["poz"];
         $rs->Fields->Item["date_public"]->Value=$_metas["date_public"];
+        $this->cache->clearByTags(["storage_gallery"],true);
         $rs->Update();
+        
     }
     
     
@@ -204,11 +207,12 @@ class GalleryLib
         $rez=[];
         while (!$rs->EOF){
             $img=[
-                "img"=>$this->storage->loadFile($rs->Fields->Item["storage_gallery_name"]->Value,(int)$rs->Fields->Item["id"]->Value,$img_name),
+                "img"=>$this->storage->loadFile($rs->Fields->Item["storage_item_name"]->Value,(int)$rs->Fields->Item["id"]->Value,$img_name),
                 "alt"=>$rs->Fields->Item["alt"]->Value,
                 "date_public"=>$rs->Fields->Item["date_public"]->Value,
                 "public"=>$rs->Fields->Item["public"]->Value,
                 "poz"=>$rs->Fields->Item["poz"]->Value,
+                "id"=>$rs->Fields->Item["id"]->Value,
             ];
             
             
