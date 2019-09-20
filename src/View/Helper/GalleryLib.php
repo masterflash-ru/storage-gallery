@@ -22,7 +22,7 @@ class GalleryLib extends AbstractHelper
         if (empty($razdel) && empty($razdel_id)){
             return $this;
         }
-        $images=$this->GalleryLib->getItemsArray($razdel,(int)$razdel_id,$index,$img_name);
+        $images=$this->GalleryLib->getItemsArray($razdel,(int)$razdel_id,$index,$img_name, true);
        \Zend\Debug\Debug::dump($images);
         
         return "";
