@@ -26,6 +26,7 @@ CREATE TABLE `storage_gallery` (
   `razdel` char(50) NOT NULL COMMENT 'Имя раздела',
   `razdel_id` int(11) NOT NULL DEFAULT '0' COMMENT 'ID раздела',
   `gallery_index` int(11) NOT NULL DEFAULT '0' COMMENT 'номер галереи, начиная с 0',
+    `todelete` int(11) DEFAULT NULL,
     `storage_item_name` char(100) DEFAULT NULL COMMENT 'Имя эл-та хранилища обработки отдельных фото галереи',
   `date_public` datetime DEFAULT NULL COMMENT 'дата публикации',
     `alt` char(255) COMMENT 'Подпись фото',
@@ -34,7 +35,8 @@ CREATE TABLE `storage_gallery` (
   PRIMARY KEY (`id`),
   KEY `date_public` (`date_public`),
   KEY `razdel` (`razdel`,`razdel_id`),
-  KEY `public` (`public`)
+  KEY `public` (`public`),
+    KEY `todelete` (`todelete`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='галерея в хранилище';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
