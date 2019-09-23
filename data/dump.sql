@@ -30,6 +30,7 @@ CREATE TABLE `storage_gallery` (
     `storage_item_name` char(100) DEFAULT NULL COMMENT 'Имя эл-та хранилища обработки отдельных фото галереи',
   `date_public` datetime DEFAULT NULL COMMENT 'дата публикации',
     `alt` char(255) COMMENT 'Подпись фото',
+    `url` char(255) COMMENT 'Адрес перехода, если есть',
   `public` int(11) DEFAULT NULL COMMENT 'флаг публикации',
   `poz` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),

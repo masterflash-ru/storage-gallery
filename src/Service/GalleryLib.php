@@ -26,8 +26,9 @@ class GalleryLib
         "poz"=>0,
         "date_public"=>null,
         "public"=>0,
+        "url" =>""
     ];
-
+    
     /**
     * номер галереи для текущих операций по умолчанию
     */
@@ -137,11 +138,9 @@ class GalleryLib
             $rs->Fields->Item["gallery_index"]->Value=$index;
             $rs->Fields->Item["storage_item_name"]->Value=$storage_name;
         }
-        $rs->Fields->Item["alt"]->Value=$metas["alt"];
-        $rs->Fields->Item["poz"]->Value=$metas["poz"];
-        $rs->Fields->Item["date_public"]->Value=$metas["date_public"];
-        $rs->Fields->Item["public"]->Value=$metas["public"];
-
+        foreach ($metas as $k=>$v){
+            $rs->Fields->Item[$k]->Value=$v;
+        }
         $rs->Update();
         $this->storage->selectStorageItem($this->storage_name);
         $this->storage->saveFiles($filename,$this->storage_name,$rs->Fields->Item["id"]->Value);
@@ -166,49 +165,54 @@ class GalleryLib
         if (!is_array($metas)){
             throw new  Exception\InvalidOptionsException("Недопустипые опции метаданных, должен быть массив");
         }
-        foreach (array_keys($this->metas) as $k){
+        foreach (array_keys($this->metas) as $k=>$v){
             if (isset($metas[$k])){
-                $_metas[$k]=$metas[$k];
+                $rs->Fields->Item[$k]->Value=$metas[$k];
+            } else {
+                $rs->Fields->Item[$k]->Value=$v;
             }
         }
-        $rs->Fields->Item["alt"]->Value=$_metas["alt"];
-        $rs->Fields->Item["poz"]->Value=$_metas["poz"];
-        $rs->Fields->Item["date_public"]->Value=$_metas["date_public"];
-        $rs->Fields->Item["public"]->Value=$_metas["public"];
         $rs->Update();
     }
-    
-    
     
     
     /**
     * получить массив выбранной галереи
     * $razdel - имя раздела, например, news
-    * $razdel_id - идентификатор раздела
+    * $razdel_id - идентификатор раздела, если 0 - выбирает все что относится ко всему разделу
     * $index - номер галереи
     * $img_name - имя элемента изображения
+    * $options - массив опций, ключи:
+    *   $limit - ограничение по кол-ву элементов, 0 - нет ограничений, т.е. вернет все
+    *   $public_only=true - возвращать только опубликованные, в противном случае все
     * возвращает массив
     */
-    public function getItemsArray(string $razdel,int $razdel_id, int $index=0,string $img_name="admin_img", bool $public_only=true)
+    public function getItemsArray(string $razdel,int $razdel_id=0, int $index=0,string $img_name="admin_img", array $options=[])
     {
         $result = false;
-         $key="gallery_files_array_{$razdel}_{$razdel_id}_{$index}_{$img_name}_{$public_only}";
+         $key="gallery_files_array_{$razdel}_{$razdel_id}_{$index}_{$img_name}_{$public_only}_{$limit}";
          $rez = $this->cache->getItem($key, $result);
          if (!$result){
-
-            if ($public_only){
+            if ($options["public_only"]){
                 $sql="and public>0";
             } else {
                 $sql="";
+            }
+            if ($options["limit"] > 0){
+                $limit=" limit ".(int)$options["limit"];
+            } else {
+                $limit="";
+            }
+            if ($razdel_id){
+                $sql.=" and razdel_id='{$razdel_id}'";
             }
             $rs=$this->connection->Execute("
                     select * from 
                         storage_gallery 
                             where 
                                 razdel='{$razdel}' and 
-                                razdel_id='{$razdel_id}' and 
                                 gallery_index={$index}  {$sql}
-                                    order by poz desc");
+                                    order by poz desc {$limit}");
             $rez=[];
             while (!$rs->EOF){
                 $img=[
@@ -229,7 +233,7 @@ class GalleryLib
          }
             return $rez;
     }
-    
+
     /*
     * активирует из списка элементов обработчиков хранилища нужный элемент, 
     * передается ключ к массиву для items

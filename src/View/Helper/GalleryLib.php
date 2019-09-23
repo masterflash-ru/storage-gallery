@@ -38,7 +38,7 @@ class GalleryLib extends AbstractHelper
             return $this;
         }
         $view=$this->getView();
-        $images=$this->GalleryLib->getItemsArray($razdel,(int)$razdel_id,$index,$img_name, true);
+        $images=$this->GalleryLib->getItemsArray($razdel,(int)$razdel_id,$index,$img_name, ["public_only"=>true]);
         foreach ($images as &$img){
             $img["img"]=$view->basePath($img["img"]);
         }
