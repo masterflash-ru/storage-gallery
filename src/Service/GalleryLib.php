@@ -191,34 +191,43 @@ class GalleryLib
     */
     public function getItemsArray(string $razdel,int $razdel_id, int $index=0,string $img_name="admin_img", bool $public_only=true)
     {
-        if ($public_only){
-            $sql="and public>0";
-        } else {
-            $sql="";
-        }
-        $rs=$this->connection->Execute("
-                select * from 
-                    storage_gallery 
-                        where 
-                            razdel='{$razdel}' and 
-                            razdel_id='{$razdel_id}' and 
-                            gallery_index={$index}  {$sql}
-                                order by poz desc");
-        $rez=[];
-        while (!$rs->EOF){
-            $img=[
-                "img"=>$this->storage->loadFile($rs->Fields->Item["storage_gallery_name"]->Value,(int)$rs->Fields->Item["id"]->Value,$img_name),
-                "alt"=>$rs->Fields->Item["alt"]->Value,
-                "date_public"=>$rs->Fields->Item["date_public"]->Value,
-                "public"=>$rs->Fields->Item["public"]->Value,
-                "poz"=>$rs->Fields->Item["poz"]->Value,
-            ];
-            
-            
-            $rez[(int)$rs->Fields->Item["id"]->Value]=$img;
-            $rs->MoveNext();
-        }
-        return $rez;
+        $result = false;
+         $key="gallery_files_array_{$razdel}_{$razdel_id}_{$index}_{$img_name}_{$public_only}";
+         $rez = $this->cache->getItem($key, $result);
+         if (!$result){
+
+            if ($public_only){
+                $sql="and public>0";
+            } else {
+                $sql="";
+            }
+            $rs=$this->connection->Execute("
+                    select * from 
+                        storage_gallery 
+                            where 
+                                razdel='{$razdel}' and 
+                                razdel_id='{$razdel_id}' and 
+                                gallery_index={$index}  {$sql}
+                                    order by poz desc");
+            $rez=[];
+            while (!$rs->EOF){
+                $img=[
+                    "img"=>$this->storage->loadFile($rs->Fields->Item["storage_item_name"]->Value,(int)$rs->Fields->Item["id"]->Value,$img_name),
+                    "alt"=>$rs->Fields->Item["alt"]->Value,
+                    "date_public"=>$rs->Fields->Item["date_public"]->Value,
+                    "public"=>$rs->Fields->Item["public"]->Value,
+                    "poz"=>$rs->Fields->Item["poz"]->Value,
+                ];
+
+
+                $rez[(int)$rs->Fields->Item["id"]->Value]=$img;
+                $rs->MoveNext();
+            }
+             $this->cache->setItem($key, $rez);
+             $this->cache->setTags($key,["storage_gallery","storage_gallery_{$razdel}_{$razdel_id}"]);
+
+         }
+            return $rez;
     }
     
     /*

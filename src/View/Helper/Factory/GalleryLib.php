@@ -14,7 +14,8 @@ class GalleryLib implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
 	   $GalleryLib=$container->get("GalleryLib");
-        return new $requestedName($GalleryLib);
+         $cache = $container->get('DefaultSystemCache');
+        return new $requestedName($GalleryLib,$cache);
     }
 }
 
