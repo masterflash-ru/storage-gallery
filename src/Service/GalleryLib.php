@@ -3,7 +3,7 @@ namespace Mf\StorageGallery\Service;
 
 use Mf\StorageGallery\Exception;
 use ADO\Service\RecordSet;
-
+use Zend\Stdlib\ArrayUtils;
 
 
 class GalleryLib 
@@ -27,6 +27,16 @@ class GalleryLib
         "date_public"=>null,
         "public"=>0,
         "url" =>""
+    ];
+    
+    /**
+    * опции по умолчанию для getItemsArray
+    */
+    protected $options=[
+        "group_by_razdel_id"=> false,
+        "limit" => 0,
+        "public_only" => true,
+        "sort" => "poz desc"
     ];
     
     /**
@@ -181,18 +191,21 @@ class GalleryLib
     * $razdel - имя раздела, например, news
     * $razdel_id - идентификатор раздела, если 0 - выбирает все что относится ко всему разделу
     * $index - номер галереи
-    * $img_name - имя элемента изображения
+    * $img_name - имя элемента изображения, как указано в настройках хранилища
     * $options - массив опций, ключи:
-    *   $limit - ограничение по кол-ву элементов, 0 - нет ограничений, т.е. вернет все
-    *   $public_only=true - возвращать только опубликованные, в противном случае все
+    *   limit =0                    - ограничение по кол-ву элементов, 0 - нет ограничений, т.е. вернет все
+    *   public_only=true            - возвращать только опубликованные, в противном случае все
+    *   group_by_razdel_id=false    - группировать в одно фото для данного элемента публикации, например, новости
+    *   sort ="poz desc"            - сортировка, как часть SQL запроса
     * возвращает массив
     */
     public function getItemsArray(string $razdel,int $razdel_id=0, int $index=0,string $img_name="admin_img", array $options=[])
     {
         $result = false;
-         $key="gallery_files_array_{$razdel}_{$razdel_id}_{$index}_{$img_name}_{$public_only}_{$limit}";
+         $key="gallery_array_f_{$razdel}_{$razdel_id}_{$index}_{$img_name}_".md5(serialize($options));
          $rez = $this->cache->getItem($key, $result);
          if (!$result){
+             $options=ArrayUtils::merge($this->options,$options);
             if ($options["public_only"]){
                 $sql="and public>0";
             } else {
@@ -206,24 +219,29 @@ class GalleryLib
             if ($razdel_id){
                 $sql.=" and razdel_id='{$razdel_id}'";
             }
+            if ($options["group_by_razdel_id"]){
+                $sql=" group by razdel_id";
+            }
             $rs=$this->connection->Execute("
                     select * from 
                         storage_gallery 
                             where 
                                 razdel='{$razdel}' and 
                                 gallery_index={$index}  {$sql}
-                                    order by poz desc {$limit}");
+                                    order by ".$options["sort"]." {$limit}");
             $rez=[];
             while (!$rs->EOF){
+                $dt=new \DateTime($rs->Fields->Item["date_public"]->Value);
                 $img=[
                     "img"=>$this->storage->loadFile($rs->Fields->Item["storage_item_name"]->Value,(int)$rs->Fields->Item["id"]->Value,$img_name),
                     "alt"=>$rs->Fields->Item["alt"]->Value,
                     "date_public"=>$rs->Fields->Item["date_public"]->Value,
                     "public"=>$rs->Fields->Item["public"]->Value,
                     "poz"=>$rs->Fields->Item["poz"]->Value,
+                    "id"=>$rs->Fields->Item["id"]->Value,
+                    "url"=>$rs->Fields->Item["url"]->Value,
+                    "timestamp"=>$dt->getTimestamp()
                 ];
-
-
                 $rez[(int)$rs->Fields->Item["id"]->Value]=$img;
                 $rs->MoveNext();
             }
