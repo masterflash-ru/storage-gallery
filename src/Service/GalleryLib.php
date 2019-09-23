@@ -301,7 +301,7 @@ class GalleryLib
     /*
     * установить доп. поля для эл-та галереи
     */
-    public function setMeta(string $name, string $value)
+    public function setMeta(string $name, $value)
     {
         if (!array_key_exists($name,$this->metas)){
             throw new  Exception\FieldNotFoundException("Поле {$name} не найдено для элемента галереи");
