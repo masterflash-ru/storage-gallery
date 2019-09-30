@@ -177,9 +177,9 @@ class GalleryLib
         }
         foreach (array_keys($this->metas) as $k=>$v){
             if (isset($metas[$k])){
-                $rs->Fields->Item[$k]->Value=$metas[$k];
+                $rs->Fields->Item[$v]->Value=$metas[$k];
             } else {
-                $rs->Fields->Item[$k]->Value=$v;
+                $rs->Fields->Item[$v]->Value=$this->metas[$v];
             }
         }
         $rs->Update();
