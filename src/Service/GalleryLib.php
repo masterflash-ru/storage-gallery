@@ -3,7 +3,7 @@ namespace Mf\StorageGallery\Service;
 
 use Mf\StorageGallery\Exception;
 use ADO\Service\RecordSet;
-use Zend\Stdlib\ArrayUtils;
+use Laminas\Stdlib\ArrayUtils;
 
 
 class GalleryLib 

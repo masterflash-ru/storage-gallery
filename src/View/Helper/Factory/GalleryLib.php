@@ -2,7 +2,7 @@
 namespace Mf\StorageGallery\View\Helper\Factory;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 
 /**
