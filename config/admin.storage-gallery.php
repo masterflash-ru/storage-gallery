@@ -10,9 +10,9 @@ use Laminas\Json\Expr;
 return [
         /*jqgrid - сетка*/
         "type" => "ijqgrid",
-        "description"=>"Редактирование Услуг",
+        //"description"=>"Редактирование галерей",
         "options" => [
-            "container" => "storage-gallery",
+            "container" => "storage_gallery",
             "caption" => "",
             "podval" => "",
             
@@ -20,51 +20,51 @@ return [
             /*все что касается чтения в таблицу*/
             "read"=>[
                 "db"=>[//плагин выборки из базы
-                    "sql"=>"select uslugi.*, id as img from uslugi",
+                    "sql"=>"select storage_gallery.*, id as img from storage_gallery where razdel_id=:razdel_id and razdel=':razdel'",
                     "PrimaryKey"=>"id",
                 ],
             ],
             /*редактирование*/
             "edit"=>[
                 "cache" =>[
-                    "tags"=>["uslugi","uslugi"],
-                    "keys"=>["uslugi","uslugi"],
+                    "tags"=>["storage_gallery","storage_gallery"],
+                    "keys"=>["storage_gallery","storage_gallery"],
                 ],
                 "db"=>[ 
-                    "sql"=>"select * from uslugi",
+                    "sql"=>"select * from storage_gallery",
                     "PrimaryKey"=>"id",
                 ],
             ],
             "add"=>[
                 "db"=>[ 
-                    "sql"=>"select * from uslugi",
+                    "sql"=>"select * from storage_gallery",
                     "PrimaryKey"=>"id",
                 ],
                 "cache" =>[
-                    "tags"=>["uslugi","uslugi"],
-                    "keys"=>["uslugi","uslugi"],
+                    "tags"=>["storage_gallery","storage_gallery"],
+                    "keys"=>["storage_gallery","storage_gallery"],
                 ],
             ],
             //удаление записи
             "del"=>[
                 "cache" =>[
-                    "tags"=>["uslugi","uslugi"],
-                    "keys"=>["uslugi","uslugi"],
+                    "tags"=>["storage_gallery","storage_gallery"],
+                    "keys"=>["storage_gallery","storage_gallery"],
                 ],
                 "db"=>[ 
-                    "sql"=>"select * from uslugi",
+                    "sql"=>"select * from storage_gallery",
                     "PrimaryKey"=>"id",
                 ],
             ],
             /*внешний вид*/
             "layout"=>[
-                "caption" => "Список услуг",
+                "caption" => "Фото",
                 "height" => "auto",
-                //"width" => 1000,
+                "width" => 800,
                 "rowNum" => 10,
                 "rowList" => [10,20],
                 "sortname" => "poz",
-                "sortorder" => "asc",
+                "sortorder" => "desc",
                 "viewrecords" => true,
                 "autoencode" => false,
                 "hidegrid" => false,
@@ -89,93 +89,44 @@ return [
                 ],
                 "colModel" => [
 
-                    ColModelHelper::text("name",["label"=>"Услуга","width"=>400,"editoptions" => ["size"=>120 ]]),
+
                     ColModelHelper::text("poz",["label"=>"Порядок","width"=>100,"editoptions" => ["size"=>120 ]]),
-                    ColModelHelper::text("url",[
-                        "width"=>400,
-                        "hidden"=>true,
-                        "editrules"=>[
-                            "edithidden"=>true,
-                        ],
-                        "plugins"=>[
-                            "edit"=>[
-                                "translit"=>[
-                                    "source"=>"name"
-                                ],
-                            ],
-                            "edit"=>[
-                                "translit"=>[
-                                    "source"=>"name"
-                                ],
-                            ],
-                            "add"=>[
-                                "translit"=>[
-                                    "source"=>"name"
-                                ],
-                            ],
-                        ],
-                       "editoptions" => ["size"=>120 ],
-                    ]),
+                    ColModelHelper::checkbox("public",["label"=>"Публ","width"=>30]),
 
-
-                    ColModelHelper::ckeditor("content1",[
-                        "label"=>"Контент перед банерами",
-                        "plugins"=>[
-                            "edit"=>[
-                                "ClearContent"=>[],
-                            ],
-                            "add"=>[
-                                "ClearContent"=>[],
-                            ],
-                        ],
-                    ]),
-                    ColModelHelper::ckeditor("content2",[
-                        "label"=>"Контент после банеров",
-                        "plugins"=>[
-                            "edit"=>[
-                                "ClearContent"=>[],
-                            ],
-                            "add"=>[
-                                "ClearContent"=>[],
-                            ],
-                        ],
-                    ]),
-                    
                     ColModelHelper::image("img",
-                                          ["label"=>"Инфографика",
+                                          ["label"=>"Фото",
+                                           "width"=>450,
                                            "plugins"=>[
                                                "read"=>[
                                                    "Images" =>[
                                                        "image_id"=>"id",                        //имя поля с ID
-                                                       "storage_item_name"=>"uslugi",
-                                                       "storage_item_rule_name"=>"img"   //имя правила из хранилища
+                                                       "storage_item_name"=>$_GET["storage_item_name"],
+                                                       "storage_item_rule_name"=>$_GET["storage_item_rule_name"],   //имя правила из хранилища
                                                    ],
                                                ],
                                                "edit"=>[
                                                    "Images" =>[
                                                        "image_id"=>"id",                        //имя поля с ID
-                                                       "storage_item_name"=>"uslugi",
+                                                       "storage_item_name"=>$_GET["storage_item_name"],
                                                    ],
                                                ],
                                                "del"=>[
                                                    "Images" =>[
                                                        "image_id"=>"id",                        //имя поля с ID
-                                                       "storage_item_name"=>"uslugi",
+                                                       "storage_item_name"=>$_GET["storage_item_name"],
                                                    ],
                                                ],
                                                "add"=>[
                                                    "Images" =>[
                                                        "image_id"=>"id",                        //имя поля с ID
-                                                       "storage_item_name"=>"uslugi",
-                                                       "database_table_name"=>"uslugi"
+                                                       "storage_item_name"=>$_GET["storage_item_name"],
+                                                       "database_table_name"=>"storage_gallery"
                                                    ],
                                                ],
                                            ],
                                           ]),
-
-                    ColModelHelper::textarea("title",["label"=>"TITLE","hidden"=>true,"editrules"=>["edithidden"=>true]]),
-                    ColModelHelper::textarea("keywords",["label"=>"KEYWORDS","hidden"=>true,"editrules"=>["edithidden"=>true]]),
-                    ColModelHelper::textarea("description",["label"=>"DESCRIPTION","hidden"=>true,"editrules"=>["edithidden"=>true]]),
+                    
+                    //ColModelHelper::hidden("razdel_id"),
 
                 ColModelHelper::cellActions(),
                     

@@ -21,7 +21,7 @@ class Version20201905163546 extends AbstractMigration implements MigrationInterf
         $table->addColumn(new Ddl\Column\Datetime('date_public', true,null,["COMMENT"=>"дата публикации"]));
         $table->addColumn(new Ddl\Column\Char('alt', 255,true,null,["COMMENT"=>"подпись фото"]));
         $table->addColumn(new Ddl\Column\Char('url', 255,true,null,["COMMENT"=>"URL"]));
-        $table->addColumn(new Ddl\Column\Integer('public',false,null));
+        $table->addColumn(new Ddl\Column\Integer('public',true,null));
         $table->addColumn(new Ddl\Column\Integer('poz',true,0,["COMMENT"=>"Порядок"]));
 
         $table->addConstraint(
