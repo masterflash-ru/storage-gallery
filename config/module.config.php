@@ -25,8 +25,13 @@ return [
         ],
         'aliases' => [
             'GalleryLib' => View\Helper\GalleryLib::class,
-			'Gallerylib' => View\Helper\GalleryLib::class,
+            'Gallerylib' => View\Helper\GalleryLib::class,
             'gallerylib' => View\Helper\GalleryLib::class,
         ],
     ],
+    /*сетка для админки*/
+    "interface"=>[
+        "storage-gallery" =>__DIR__."/admin.storage-gallery.php",
+    ],
+
 ];
