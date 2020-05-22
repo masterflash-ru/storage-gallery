@@ -92,7 +92,7 @@ return [
 
                     ColModelHelper::text("poz",["label"=>"Порядок","width"=>100,"editoptions" => ["size"=>120 ]]),
                     ColModelHelper::checkbox("public",["label"=>"Публ","width"=>30]),
-
+                    
                     ColModelHelper::image("img",
                                           ["label"=>"Фото",
                                            "width"=>450,
@@ -100,26 +100,26 @@ return [
                                                "read"=>[
                                                    "Images" =>[
                                                        "image_id"=>"id",                        //имя поля с ID
-                                                       "storage_item_name"=>$_GET["storage_item_name"],
-                                                       "storage_item_rule_name"=>$_GET["storage_item_rule_name"],   //имя правила из хранилища
+                                                       "storage_item_name"=>$_GET["storage_item_name"] ?? "",
+                                                       "storage_item_rule_name"=>$_GET["storage_item_rule_name"]  ?? "",   //имя правила из хранилища
                                                    ],
                                                ],
                                                "edit"=>[
                                                    "Images" =>[
                                                        "image_id"=>"id",                        //имя поля с ID
-                                                       "storage_item_name"=>$_GET["storage_item_name"],
+                                                       "storage_item_name"=>$_GET["storage_item_name"] ?? "",
                                                    ],
                                                ],
                                                "del"=>[
                                                    "Images" =>[
                                                        "image_id"=>"id",                        //имя поля с ID
-                                                       "storage_item_name"=>$_GET["storage_item_name"],
+                                                       "storage_item_name"=>$_GET["storage_item_name"] ?? "",
                                                    ],
                                                ],
                                                "add"=>[
                                                    "Images" =>[
                                                        "image_id"=>"id",                        //имя поля с ID
-                                                       "storage_item_name"=>$_GET["storage_item_name"],
+                                                       "storage_item_name"=>$_GET["storage_item_name"] ?? "",
                                                        "database_table_name"=>"storage_gallery"
                                                    ],
                                                ],
